@@ -23,7 +23,7 @@ A basic program which creates a link to the file "C:\test\a.txt" is
 listed below:
 
 
-```
+```c
 #include "LibSLNK.h"
 
 int main(void)
