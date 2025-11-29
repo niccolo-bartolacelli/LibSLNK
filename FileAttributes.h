@@ -1,0 +1,26 @@
+#ifndef FILEATTRIBUTES_H
+#define FILEATTRIBUTES_H
+
+#include "LibSLNK.h"
+
+#define LNK_FILE_ATTRIBUTE_READONLY            0x00000001
+#define LNK_FILE_ATTRIBUTE_HIDDEN              0x00000002
+#define LNK_FILE_ATTRIBUTE_SYSTEM              0x00000004
+#define LNK_FILE_ATTRIBUTE_RESERVED1           0x00000008  // Riservato (MUST be 0)
+#define LNK_FILE_ATTRIBUTE_DIRECTORY           0x00000010
+#define LNK_FILE_ATTRIBUTE_ARCHIVE             0x00000020
+#define LNK_FILE_ATTRIBUTE_RESERVED2           0x00000040  // Riservato (MUST be 0)
+#define LNK_FILE_ATTRIBUTE_NORMAL              0x00000080
+#define LNK_FILE_ATTRIBUTE_TEMPORARY           0x00000100
+#define LNK_FILE_ATTRIBUTE_SPARSE_FILE         0x00000200
+#define LNK_FILE_ATTRIBUTE_REPARSE_POINT       0x00000400
+#define LNK_FILE_ATTRIBUTE_COMPRESSED          0x00000800
+#define LNK_FILE_ATTRIBUTE_OFFLINE             0x00001000
+#define LNK_FILE_ATTRIBUTE_NOT_CONTENT_INDEXED 0x00002000
+#define LNK_FILE_ATTRIBUTE_ENCRYPTED           0x00004000
+
+
+int SetFileAttribute(struct MSShellLink *Link, uint32_t Flag);
+int ClearFileAttribute(struct MSShellLink *Link, uint32_t Flag);
+
+#endif /* FILEATTRIBUTES_H */
