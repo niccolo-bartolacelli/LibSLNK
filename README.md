@@ -44,11 +44,12 @@ int main(void)
 }
 ```
 
-
-*[!] ATTENTION [!]
+  
+  
+**[!] ATTENTION [!]  
 BE VERY CAREFUL WHEN USING CERTAIN CONFIGURATIONS, AS IT CAN RESULT IN UNEXPECTED OR
-POTENTIALLY DANGEROUS BEHAVIOUR.
+POTENTIALLY DANGEROUS BEHAVIOUR.**
 
 Example: if you have already created an .lnk file as "C:\test\example.lnk"
 and you try to create that file again, pointing to itself (i.e. LnkSetPath(&lnk, "C:\test\example.lnk")),
-with ALLOW_LINK_TO_LINK flags set, it can result in a system crash.*
+with ALLOW_LINK_TO_LINK flags set, it can result in a system crash.
