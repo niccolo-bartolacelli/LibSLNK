@@ -12,13 +12,13 @@ and rely on the functions provided by this library to access and edit
 file content.
 
 Basic usage of the library is condensed in three steps:
-
-	1. Link initialization,
-
-	2. Link configuration, and
-
-	3. Link build and cleanup.
-
+  
+  1. Link initialization,  
+    
+  2. Link configuration, and  
+    
+  3. Link build and cleanup.  
+  
 A basic program which creates a link to the file "C:\test\a.txt" is
 listed below:
 
@@ -51,5 +51,5 @@ BE VERY CAREFUL WHEN USING CERTAIN CONFIGURATIONS, AS IT CAN RESULT IN UNEXPECTE
 POTENTIALLY DANGEROUS BEHAVIOUR.**
 
 Example: if you have already created an .lnk file as "C:\test\example.lnk"
-and you try to create that file again, pointing to itself (i.e. LnkSetPath(&lnk, "C:\test\example.lnk")),
+and you try to create that file again, pointing to itself (i.e. `LnkSetPath(&lnk, "C:\test\example.lnk")`),
 with ALLOW_LINK_TO_LINK flags set, it can result in a system crash.
