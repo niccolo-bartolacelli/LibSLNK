@@ -1,7 +1,7 @@
-#include <stdio.h>
+#include "LibSLNK.h"
+
 #include <stdlib.h>
 
-#include "LibSLNK.h"
 #include "LnkBuilder.h"
 #include "LinkFlags.h"
 
@@ -11,7 +11,7 @@ struct MSShellLink *LnkInit(void)
 {
 	struct MSShellLink *Link;
 	
-	Link = malloc(sizeof(struct MSShellLink));
+	Link = calloc(1, sizeof(struct MSShellLink));
 	if (Link == NULL) {
 		return NULL;
 	}
@@ -20,57 +20,12 @@ struct MSShellLink *LnkInit(void)
 	Link->ShellLinkHeader.HeaderSize = 0x0000004C;
 
 	/* Fixed Value */
-	Link->ShellLinkHeader.LinkCLSID1 = 0x00021401;
-	Link->ShellLinkHeader.LinkCLSID2 = 0x00000000;
-	Link->ShellLinkHeader.LinkCLSID3 = 0x46000000000000C0;
+	Link->ShellLinkHeader.LinkCLSID_1 = 0x00021401;
+	Link->ShellLinkHeader.LinkCLSID_2 = 0x00000000;
+	Link->ShellLinkHeader.LinkCLSID_3 = 0x46000000000000C0;
 
-	/* Initialize on 0, can be set later */
-	Link->ShellLinkHeader.LinkFlags = 0x00000000;
-	LnkSetFlag(Link, LNK_FLAG_IS_UNICODE);					 /* Sets default to UNICODE, ANSI not supported */
-
-	Link->ShellLinkHeader.FileAttributes = 0x00000000;
-
-	Link->ShellLinkHeader.CreationTime = 0x0000000000000000;
-	Link->ShellLinkHeader.AccessTime = 0x0000000000000000;
-	Link->ShellLinkHeader.WriteTime = 0x0000000000000000;
-
-	Link->ShellLinkHeader.FileSize = 0x00000000;
-	Link->ShellLinkHeader.IconIndex = 0x00000000;
+	/* Either 1, 3 or 7 */
 	Link->ShellLinkHeader.ShowCommand = 0x00000001;
-
-	Link->ShellLinkHeader.HotKey = 0x0000;
-
-	/* Fixed values */
-	Link->ShellLinkHeader.Reserved1 = 0x0000;
-	Link->ShellLinkHeader.Reserved2 = 0x00000000;
-	Link->ShellLinkHeader.Reserved3 = 0x00000000;
-
-
-	/* IDList */
-	Link->LinkTargetIDList.IDListSize = 0x0000;
-	Link->LinkTargetIDList.IDList = NULL;
-
-
-	/* LinkInfo */
-	Link->LinkInfo.LinkInfoSize = 0;
-
-	/* StringData */
-	Link->StringData.NameString.CountCharacters = 0x0000;
-	Link->StringData.RelativePath.CountCharacters = 0x0000;
-	Link->StringData.WorkingDir.CountCharacters = 0x0000;
-	Link->StringData.CommandLineArguments.CountCharacters = 0x0000;
-	Link->StringData.IconLocation.CountCharacters = 0x0000;
-
-	Link->StringData.NameString.String = NULL;
-	Link->StringData.RelativePath.String = NULL;
-	Link->StringData.WorkingDir.String = NULL;
-	Link->StringData.CommandLineArguments.String = NULL;
-	Link->StringData.IconLocation.String = NULL;
-
-
-	/* ExtraData */
-	Link->ExtraData.TerminalBlock = 0x00000000;
-
 
 	return Link;
 }
@@ -78,18 +33,19 @@ struct MSShellLink *LnkInit(void)
 
 
 /* Build Link procedure */
-int LnkBuild(struct MSShellLink *Link, const wchar_t *Path)
+int LnkBuild(struct MSShellLink *Link, const FILE *File)
 {
-	FILE *fptr;
-	
-	fptr = _wfopen(Path, L"wb");
-	if (fptr == 0) return 0;
+	if (!BuildShellLinkHeaderToFile(Link, File)) {
+		return 0;
+	}
 
-	BuildShellLinkHeaderToFile(Link, fptr);
-	BuildLinkTargetIDListToFile(Link, fptr);
-	BuildStringDataToFile(Link, fptr);
+	if (!BuildLinkTargetIDListToFile(Link, File)) {
+		return 0;
+	}
 
-	fclose(fptr);
+	if (!BuildStringDataToFile(Link, File)) {
+		return 0;
+	}
 
 	return 1;
 }
