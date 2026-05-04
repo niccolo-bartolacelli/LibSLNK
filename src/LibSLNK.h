@@ -80,7 +80,7 @@ struct MSShellLink {
 
 
 /* Functions definitions */
-int LnkInit(struct MSShellLink *Link);
+struct MSShellLink *LnkInit(void);
 
 int LnkBuild(struct MSShellLink *Link, const wchar_t *Path);
 

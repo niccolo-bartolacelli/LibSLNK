@@ -7,8 +7,15 @@
 
 
 
-int LnkInit(struct MSShellLink *Link)
+struct MSShellLink *LnkInit(void)
 {
+	struct MSShellLink *Link;
+	
+	Link = malloc(sizeof(struct MSShellLink));
+	if (Link == NULL) {
+		return NULL;
+	}
+
 	/* Fixed Value */
 	Link->ShellLinkHeader.HeaderSize = 0x0000004C;
 
@@ -65,7 +72,7 @@ int LnkInit(struct MSShellLink *Link)
 	Link->ExtraData.TerminalBlock = 0x00000000;
 
 
-	return 1;
+	return Link;
 }
 
 
@@ -73,7 +80,9 @@ int LnkInit(struct MSShellLink *Link)
 /* Build Link procedure */
 int LnkBuild(struct MSShellLink *Link, const wchar_t *Path)
 {
-	FILE *fptr = _wfopen(Path, L"wb");
+	FILE *fptr;
+	
+	fptr = _wfopen(Path, L"wb");
 	if (fptr == 0) return 0;
 
 	BuildShellLinkHeaderToFile(Link, fptr);
