@@ -13,53 +13,53 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="File di origine\test">
+      <UniqueIdentifier>{2f11b9b8-840a-4155-80dc-5801176a3766}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.c">
+    <ClCompile Include="src\FileAttributes.c">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="LibSLNK.c">
+    <ClCompile Include="src\HotKey.c">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="LinkFlags.c">
+    <ClCompile Include="src\IDList.c">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="IDList.c">
+    <ClCompile Include="src\LibSLNK.c">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="FileAttributes.c">
+    <ClCompile Include="src\LinkFlags.c">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="HotKey.c">
+    <ClCompile Include="src\LnkBuilder.c">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="LnkBuilder.c">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="StringData.c">
+    <ClCompile Include="src\StringData.c">
       <Filter>File di origine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="LibSLNK.h">
+    <ClInclude Include="src\FileAttributes.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="IDList.h">
+    <ClInclude Include="src\HotKey.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="LinkFlags.h">
+    <ClInclude Include="src\IDList.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="FileAttributes.h">
+    <ClInclude Include="src\LibSLNK.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="HotKey.h">
+    <ClInclude Include="src\LinkFlags.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="LnkBuilder.h">
+    <ClInclude Include="src\LnkBuilder.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
-    <ClInclude Include="StringData.h">
+    <ClInclude Include="src\StringData.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>

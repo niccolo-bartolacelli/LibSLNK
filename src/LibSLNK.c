@@ -9,17 +9,17 @@
 
 int LnkInit(struct MSShellLink *Link)
 {
-	// Fixed Value
+	/* Fixed Value */
 	Link->ShellLinkHeader.HeaderSize = 0x0000004C;
 
-	// Fixed Value
+	/* Fixed Value */
 	Link->ShellLinkHeader.LinkCLSID1 = 0x00021401;
 	Link->ShellLinkHeader.LinkCLSID2 = 0x00000000;
 	Link->ShellLinkHeader.LinkCLSID3 = 0x46000000000000C0;
 
-	// Initialize on 0, can be set later
+	/* Initialize on 0, can be set later */
 	Link->ShellLinkHeader.LinkFlags = 0x00000000;
-	LnkSetFlag(Link, LNK_FLAG_IS_UNICODE);					 // Sets default to UNICODE, ANSI not supported
+	LnkSetFlag(Link, LNK_FLAG_IS_UNICODE);					 /* Sets default to UNICODE, ANSI not supported */
 
 	Link->ShellLinkHeader.FileAttributes = 0x00000000;
 
@@ -33,22 +33,21 @@ int LnkInit(struct MSShellLink *Link)
 
 	Link->ShellLinkHeader.HotKey = 0x0000;
 
-	// Fixed values
+	/* Fixed values */
 	Link->ShellLinkHeader.Reserved1 = 0x0000;
 	Link->ShellLinkHeader.Reserved2 = 0x00000000;
 	Link->ShellLinkHeader.Reserved3 = 0x00000000;
 
 
-	// IDList
+	/* IDList */
 	Link->LinkTargetIDList.IDListSize = 0x0000;
 	Link->LinkTargetIDList.IDList = NULL;
-	Link->LinkTargetIDList.TerminalID = 0x0000;
 
 
-	//LinkInfo
+	/* LinkInfo */
 	Link->LinkInfo.LinkInfoSize = 0;
 
-	// StringData
+	/* StringData */
 	Link->StringData.NameString.CountCharacters = 0x0000;
 	Link->StringData.RelativePath.CountCharacters = 0x0000;
 	Link->StringData.WorkingDir.CountCharacters = 0x0000;
@@ -62,7 +61,7 @@ int LnkInit(struct MSShellLink *Link)
 	Link->StringData.IconLocation.String = NULL;
 
 
-	// ExtraData
+	/* ExtraData */
 	Link->ExtraData.TerminalBlock = 0x00000000;
 
 
@@ -71,7 +70,7 @@ int LnkInit(struct MSShellLink *Link)
 
 
 
-// Build Link procedure
+/* Build Link procedure */
 int LnkBuild(struct MSShellLink *Link, const wchar_t *Path)
 {
 	FILE *fptr = _wfopen(Path, L"wb");
@@ -87,15 +86,15 @@ int LnkBuild(struct MSShellLink *Link, const wchar_t *Path)
 }
 
 
-// Free dynamically allocated fields
+/* Free dynamically allocated fields */
 int LnkFree(struct MSShellLink *Link)
 {
-	// Free IDList structure
+	/* Free IDList structure */
 	if (LnkCheckFlag(Link, LNK_FLAG_HAS_TARGET_IDLIST) && Link->LinkTargetIDList.IDList != NULL) {
 		free(Link->LinkTargetIDList.IDList);
 	}
 
-	// Free StringData structures
+	/* Free StringData structures */
 	if (LnkCheckFlag(Link, LNK_FLAG_HAS_NAME) && Link->StringData.NameString.String != NULL) {
 		free(Link->StringData.NameString.String);
 	}

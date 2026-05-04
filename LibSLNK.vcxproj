@@ -18,6 +18,24 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\FileAttributes.c" />
+    <ClCompile Include="src\HotKey.c" />
+    <ClCompile Include="src\IDList.c" />
+    <ClCompile Include="src\LibSLNK.c" />
+    <ClCompile Include="src\LinkFlags.c" />
+    <ClCompile Include="src\LnkBuilder.c" />
+    <ClCompile Include="src\StringData.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\FileAttributes.h" />
+    <ClInclude Include="src\HotKey.h" />
+    <ClInclude Include="src\IDList.h" />
+    <ClInclude Include="src\LibSLNK.h" />
+    <ClInclude Include="src\LinkFlags.h" />
+    <ClInclude Include="src\LnkBuilder.h" />
+    <ClInclude Include="src\StringData.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -126,25 +144,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="FileAttributes.c" />
-    <ClCompile Include="HotKey.c" />
-    <ClCompile Include="IDList.c" />
-    <ClCompile Include="LibSLNK.c" />
-    <ClCompile Include="LinkFlags.c" />
-    <ClCompile Include="LnkBuilder.c" />
-    <ClCompile Include="main.c" />
-    <ClCompile Include="StringData.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="FileAttributes.h" />
-    <ClInclude Include="HotKey.h" />
-    <ClInclude Include="IDList.h" />
-    <ClInclude Include="LibSLNK.h" />
-    <ClInclude Include="LinkFlags.h" />
-    <ClInclude Include="LnkBuilder.h" />
-    <ClInclude Include="StringData.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

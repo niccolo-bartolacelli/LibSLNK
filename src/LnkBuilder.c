@@ -2,19 +2,27 @@
 #include "LnkBuilder.h"
 #include "LinkFlags.h"
 
-// ATTENTION!! THIS MACRO IS SOLELY INTENTED TO BE USED IN FILE WRITE PROCESS AND SHOULD NOT BE USED IN ANY OTHER CONTEXT. BE CAREFUL USING IT
+/* ATTENTION!! THIS MACRO IS SOLELY INTENTED TO BE USED IN FILE WRITE PROCESS AND SHOULD NOT BE USED IN ANY OTHER CONTEXT. BE CAREFUL USING IT */
 #define WRITES(x, fptr) fwrite_le(&(x), sizeof(x), fptr);
 
-
-// Helper function
+/* Handle different implementation based on architecture */
 void fwrite_le(const void *buffer, size_t buff_size, FILE *fptr)
 {
+#ifdef _BIG_ENDIAN
+	uint8_t *tmp = ((uint8_t *)buffer) + (buff_size - 1);
+
+	for (size_t i = 0; i < buff_size; i++) {
+		fputc(*tmp, fptr);
+		tmp--;
+	}
+#else
 	uint8_t *tmp = (uint8_t *)buffer;
 
 	for (size_t i = 0; i < buff_size; i++) {
-		fwrite(tmp, 1, 1, fptr);
+		fputc(*tmp, fptr);
 		tmp++;
 	}
+#endif
 }
 
 
@@ -54,8 +62,6 @@ int BuildLinkTargetIDListToFile(struct MSShellLink *lnk, FILE *fptr)
 		for (uint16_t i = 0; i < lnk->LinkTargetIDList.IDListSize; i++) {
 			WRITES(lnk->LinkTargetIDList.IDList[i], fptr);
 		}
-
-		//WRITES(lnk->LinkTargetIDList.TerminalID, fptr);
 	}
 
 	return 1;

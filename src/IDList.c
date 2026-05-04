@@ -12,7 +12,7 @@ int LnkSetPath(struct MSShellLink *lnk, const wchar_t *path) {
     if (!pidl) return 0;
 
 
-    // Compute PIDL IDListSize
+    /* Compute PIDL IDListSize */
     lnk->LinkTargetIDList.IDListSize = 0;
 
     workPidl = pidl;
@@ -21,14 +21,14 @@ int LnkSetPath(struct MSShellLink *lnk, const wchar_t *path) {
         workPidl = (LPITEMIDLIST)((uint8_t *)workPidl + workPidl->mkid.cb);
     }
 
-    lnk->LinkTargetIDList.IDListSize += 2 * sizeof(uint8_t);    // Extra size for TerminalID
+    lnk->LinkTargetIDList.IDListSize += 2 * sizeof(uint8_t);    /* Extra size for TerminalID */
 
 
-    // Allocate sufficient space for IDList
+    /* Allocate sufficient space for IDList */
     uint8_t *pidlBuffer = malloc(lnk->LinkTargetIDList.IDListSize * sizeof(uint8_t));
     if (!pidlBuffer) return 0;
 
-    // Populate PIDL Buffer IDList
+    /* Populate PIDL Buffer IDList */
     workPidl = pidl;
     int offset = 0;
     while (workPidl->mkid.cb != 0x0000) {
@@ -42,15 +42,14 @@ int LnkSetPath(struct MSShellLink *lnk, const wchar_t *path) {
         workPidl = (LPITEMIDLIST)((uint8_t *)workPidl + workPidl->mkid.cb);
     }
 
-    pidlBuffer[offset++] = 0x00;    // TerminalID
+    pidlBuffer[offset++] = 0x00;    /* TerminalID */
     pidlBuffer[offset++] = 0x00;
 
-    lnk->LinkTargetIDList.IDList = pidlBuffer;  // Return value
-    lnk->LinkTargetIDList.TerminalID = 0x0000;
+    lnk->LinkTargetIDList.IDList = pidlBuffer;  /* Return value */
 
     ILFree(pidl);
 
-    // Set HAS_TARGET_IDLIST flag
+    /* Set HAS_TARGET_IDLIST flag */
     LnkSetFlag(lnk, LNK_FLAG_HAS_TARGET_IDLIST);
 
     return 1;
