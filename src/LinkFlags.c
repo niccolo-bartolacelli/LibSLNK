@@ -1,29 +1,35 @@
 #include "LinkFlags.h"
 
-int LnkSetFlag(struct MSShellLink *lnk, uint32_t flag)
+int LnkCheckFlag(struct MSShellLink *Link, uint32_t Flag)
 {
-	if (lnk == NULL) return 0;
+	if (Link == NULL) {
+		return 0;
+	}
 
-	// Set flag
-	lnk->ShellLinkHeader.LinkFlags |= flag;
-	
+	/* Check flag */
+	return Link->ShellLinkHeader.LinkFlags & Flag;
+}
+
+int LnkSetFlag(struct MSShellLink *Link, uint32_t Flag)
+{
+	if (Link == NULL) {
+		return 0;
+	}
+
+	/* Set flag */
+	Link->ShellLinkHeader.LinkFlags |= Flag;
+
 	return 1;
 }
 
-int LnkClearFlag(struct MSShellLink *lnk, uint32_t flag)
+int LnkClearFlag(struct MSShellLink *Link, uint32_t Flag)
 {
-	if (lnk == NULL) return 0;
-	
-	// Clear flag
-	lnk->ShellLinkHeader.LinkFlags &= ~flag;
-	
-	return 1;
-}
+	if (Link == NULL) {
+		return 0;
+	}
 
-int LnkCheckFlag(struct MSShellLink *lnk, uint32_t flag)
-{
-	if (lnk == NULL) return 0;
-	
-	// Check flag
-	return lnk->ShellLinkHeader.LinkFlags & flag;
+	/* Clear flag */
+	Link->ShellLinkHeader.LinkFlags &= ~Flag;
+
+	return 1;
 }

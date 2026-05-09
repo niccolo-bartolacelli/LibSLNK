@@ -2,34 +2,44 @@
 
 #include "LinkFlags.h"
 
-int SetFileAttribute(struct MSShellLink *Link, uint32_t Flag)
+int LnkCheckFileAttribute(struct MSShellLink *Link, uint32_t FileAttribute)
+{
+	if (Link == NULL) {
+		return 0;
+	}
+
+	/* Check attribute */
+	return Link->ShellLinkHeader.FileAttributes & FileAttribute;
+}
+
+int LnkSetFileAttribute(struct MSShellLink *Link, uint32_t FileAttribute)
 {
 	if (Link == NULL) {
 		return 0;
 	}
 	
-	/* Set flag */
-	Link->ShellLinkHeader.FileAttributes |= Flag;
+	/* Set attribute */
+	Link->ShellLinkHeader.FileAttributes |= FileAttribute;
 
-	/* Clear reserved flags */
-	Link->ShellLinkHeader.FileAttributes &= ~LNK_FILE_ATTRIBUTE_RESERVED1;
-	Link->ShellLinkHeader.FileAttributes &= ~LNK_FILE_ATTRIBUTE_RESERVED2;
+	/* Clear reserved bits */
+	Link->ShellLinkHeader.FileAttributes &= ~LNK_FILE_ATTRIBUTE_RESERVED_1;
+	Link->ShellLinkHeader.FileAttributes &= ~LNK_FILE_ATTRIBUTE_RESERVED_2;
 
 	return 1;
 }
 
-int ClearFileAttribute(struct MSShellLink *Link, uint32_t Flag)
+int LnkClearFileAttribute(struct MSShellLink *Link, uint32_t FileAttribute)
 {
 	if (Link == NULL) {
 		return 0;
 	}
 
-	/* Clear flag */
-	Link->ShellLinkHeader.FileAttributes &= ~Flag;
+	/* Clear attribute */
+	Link->ShellLinkHeader.FileAttributes &= ~FileAttribute;
 
-	/* Clear reserved flags */
-	Link->ShellLinkHeader.FileAttributes &= ~LNK_FILE_ATTRIBUTE_RESERVED1;
-	Link->ShellLinkHeader.FileAttributes &= ~LNK_FILE_ATTRIBUTE_RESERVED2;
+	/* Clear reserved bits */
+	Link->ShellLinkHeader.FileAttributes &= ~LNK_FILE_ATTRIBUTE_RESERVED_1;
+	Link->ShellLinkHeader.FileAttributes &= ~LNK_FILE_ATTRIBUTE_RESERVED_2;
 
 	return 1;
 }
