@@ -33,7 +33,7 @@ struct MSShellLink *LnkInit(void)
 
 
 /* Build Link procedure */
-int LnkBuild(struct MSShellLink *Link, const FILE *File)
+int LnkBuild(struct MSShellLink *Link, FILE *File)
 {
 	if (!BuildShellLinkHeaderToFile(Link, File)) {
 		return 0;
