@@ -11,7 +11,7 @@ int LnkSetString(struct MSShellLink *lnk, const wchar_t *data, uint8_t type)
 	if (lnk == NULL) return 0;
 
 	uint32_t StringDataFlag;
-	struct StringData *StringDataRef;
+	struct String *StringDataRef;
 
 
 	// Switch type
@@ -45,10 +45,10 @@ int LnkSetString(struct MSShellLink *lnk, const wchar_t *data, uint8_t type)
 
 	StringDataRef->CountCharacters = (uint16_t)wcslen(data);
 
-	StringDataRef->String = malloc(StringDataRef->CountCharacters * sizeof(wchar_t));
-	if (StringDataRef->String == NULL) return 0;
+	StringDataRef->StringUnicode = malloc(StringDataRef->CountCharacters * sizeof(wchar_t));
+	if (StringDataRef->StringUnicode == NULL) return 0;
 
-	wcsncpy(StringDataRef->String, data, StringDataRef->CountCharacters);
+	wcsncpy(StringDataRef->StringUnicode, data, StringDataRef->CountCharacters);
 
 
 	return 1;
