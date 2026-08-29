@@ -10,8 +10,6 @@
 
 The project is designed for developers who need direct control over Shell Link data without hiding the underlying file format behind a high-level abstraction.
 
-> **⚠️ Security & stability notice:** LibSLNK provides low-level access to `.lnk` structures. Certain configurations can produce unexpected or potentially dangerous behavior. Review the security considerations below before using it with untrusted or self-referential links.
-
 ---
 
 ## Overview
@@ -147,16 +145,6 @@ LibSLNK operates at a deliberately low level.
 
 **Do not assume that every valid API configuration is safe to execute on a real system.**
 
-In particular, configurations involving links that point to other links can lead to unexpected behavior.
-
-For example, attempting to create an `.lnk` file that points to itself while allowing link-to-link targets can result in a system crash under the conditions currently documented by the project.
-
-```text
-example.lnk
-     │
-     └──────────────► example.lnk
-```
-
 If you are experimenting with unusual Shell Link configurations:
 
 * Use a virtual machine or isolated test environment.
@@ -164,7 +152,7 @@ If you are experimenting with unusual Shell Link configurations:
 * Treat externally supplied `.lnk` files as untrusted input.
 * Do not enable permissive link configurations unless you understand their consequences.
 
-**This project is experimental software. Use it at your own risk.**
+**This project is experimental software.**
 
 ---
 
@@ -203,8 +191,6 @@ The project is particularly useful for:
 ## Research & Security
 
 LibSLNK was developed as a low-level exploration of the Microsoft Shell Link format.
-
-During development, unusual link-resolution behavior was investigated, including self-referential link configurations.
 
 If you discover a security issue, please avoid publicly disclosing sensitive details before allowing the issue to be investigated responsibly.
 
