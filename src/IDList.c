@@ -1,59 +1,66 @@
-#include <Windows.h>
-#include <ShlObj_core.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include "LibSLNK.h"
-#include "LinkFlags.h"
+#include "IDList.h"
 
-int LnkSetPath(struct MSShellLink *Link, const wchar_t *path) {
-    int offset;
-    uint8_t *pidlBuffer;
-    LPITEMIDLIST pidl, workPidl;
+#include <ShlObj_core.h>
+
+#include "LibSLNK.h"
+
+
+const char *LnkGetPath(struct MSShellLink *Link)
+{
+    if (!LnkCheckFlag(Link, LNK_FLAG_HAS_TARGET_IDLIST)) {
+        return NULL;
+    }
+
+    return NULL;
+}
+
+int LnkSetPath(struct MSShellLink *Link, const wchar_t *path)
+{
+    struct ItemID *pidlBuffer;
+    size_t pidlBufferLen;
+    LPITEMIDLIST pidl, pidl_base_addr;
 
     pidl = ILCreateFromPathW(path);
     if (!pidl) {
         return 0;
     }
-
-
-    /* Compute PIDL IDListSize */
-    Link->LinkTargetIDList.IDListSize = 0;
-
-    workPidl = pidl;
-    while (workPidl->mkid.cb != 0x0000) {
-        Link->LinkTargetIDList.IDListSize += workPidl->mkid.cb * sizeof(uint8_t);
-        workPidl = (LPITEMIDLIST)((uint8_t *)workPidl + workPidl->mkid.cb);
-    }
-
-    Link->LinkTargetIDList.IDListSize += 2 * sizeof(uint8_t);    /* Extra size for TerminalID */
-
-
-    /* Allocate IDList */
-    pidlBuffer = malloc(Link->LinkTargetIDList.IDListSize * sizeof(uint8_t));
-    if (!pidlBuffer) {
-        return 0;
-    }
+    pidl_base_addr = pidl;
 
     /* Populate PIDL Buffer IDList */
-    workPidl = pidl;
-    offset = 0;
-    while (workPidl->mkid.cb != 0x0000) {
-        pidlBuffer[offset++] = workPidl->mkid.cb & 0xFF;
-        pidlBuffer[offset++] = workPidl->mkid.cb >> 0x8;
+    pidlBuffer = NULL;
+    pidlBufferLen = 0;
 
-        for (int i = 0; i < workPidl->mkid.cb - sizeof(workPidl->mkid.cb); i += 1) {
-            pidlBuffer[offset++] = workPidl->mkid.abID[i];
+    Link->LinkTargetIDList.IDListSize = 0;
+
+    while (pidl->mkid.cb != 0x0000) {
+        /* Update effective list size */
+        Link->LinkTargetIDList.IDListSize += pidl->mkid.cb;
+
+        /* Add ItemID */
+        pidlBuffer = realloc(pidlBuffer, (pidlBufferLen + 1) * sizeof(struct ItemID));
+
+        pidlBuffer[pidlBufferLen].ItemIDSize = pidl->mkid.cb;
+
+        pidlBuffer[pidlBufferLen].Data = malloc(pidl->mkid.cb - sizeof(pidl->mkid.cb));
+        for (USHORT i = 0; i < pidl->mkid.cb - sizeof(pidl->mkid.cb); i++) {
+            pidlBuffer[pidlBufferLen].Data[i] = pidl->mkid.abID[i];
         }
 
-        workPidl = (LPITEMIDLIST)((uint8_t *)workPidl + workPidl->mkid.cb);
+        pidlBufferLen++;
+
+        pidl = (LPITEMIDLIST)((uint8_t *)pidl + pidl->mkid.cb);
     }
 
-    pidlBuffer[offset++] = 0x00;    /* TerminalID */
-    pidlBuffer[offset++] = 0x00;
+    /* TerminalID is handled as an extra empty ItemID */
+    Link->LinkTargetIDList.IDListSize += 2;
+
+    pidlBuffer = realloc(pidlBuffer, (pidlBufferLen + 1) * sizeof(struct ItemID));
+    pidlBuffer[pidlBufferLen].ItemIDSize = 0x0000;
+    pidlBuffer[pidlBufferLen].Data = NULL;
 
     Link->LinkTargetIDList.IDList = pidlBuffer;  /* Return value */
 
-    ILFree(pidl);
+    ILFree(pidl_base_addr);
 
     /* Set HAS_TARGET_IDLIST flag */
     LnkSetFlag(Link, LNK_FLAG_HAS_TARGET_IDLIST);
