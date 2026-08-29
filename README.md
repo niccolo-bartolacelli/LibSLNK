@@ -14,11 +14,9 @@ The project is designed for developers who need direct control over Shell Link d
 
 ---
 
-## Why LibSLNK?
+## Overview
 
-Windows shortcut files look simple from the outside, but `.lnk` files contain a structured binary representation of a Shell Link.
-
-LibSLNK exposes that structure through a C API, allowing applications to programmatically construct and manipulate Shell Link files.
+LibSLNK exposes `.lnk` files structured binary representation through a C API, allowing applications to programmatically construct and manipulate Shell Link files.
 
 The library follows a simple workflow:
 
@@ -27,9 +25,7 @@ Initialize
     ↓
 Configure
     ↓
-Build
-    ↓
-Free
+  Build
 ```
 
 This keeps the API small while still providing low-level control over the resulting file.
@@ -41,28 +37,34 @@ This keeps the API small while still providing low-level control over the result
 A minimal example creating a shortcut to `C:\test\a.txt`:
 
 ```c
+#include <stdio.h>
 #include "LibSLNK.h"
 
 int main(void)
 {
-    struct MSShellLink lnk;
+    FILE *fptr;
+    struct MSShellLink *lnk;
 
     /* Initialize */
-    LnkInit(&lnk);
+    LnkInit(lnk);
 
     /* Configure */
-    LnkSetPath(&lnk, L"C:\\test\\a.txt");
+    LnkSetPath(lnk, L"C:\\test\\a.txt");
     LnkSetString(
-        &lnk,
+        lnk,
         L"a.txt - Text File linked with LibSLNK",
         LNK_SD_NAME_STRING
     );
 
     /* Build */
-    LnkBuild(&lnk, L"C:\\Users\\nicco\\Desktop\\buildlink.lnk");
+	fptr = _wfopen(L"C:\\test\\lnk_to_a.txt.lnk", L"wb");
+    if (fptr) {
+        LnkBuild(lnk, fptr);
+        fclose(fptr);   
+    }
 
     /* Cleanup */
-    LnkFree(&lnk);
+    LnkFree(lnk);
 
     return 0;
 }
@@ -83,23 +85,36 @@ The main interface is exposed through `LibSLNK.h`.
 
 ### Core functions
 
-| Function         | Purpose                               |
+| Function         | Description                           |
 | ---------------- | ------------------------------------- |
 | `LnkInit()`      | Initialize an `MSShellLink` structure |
 | `LnkSetPath()`   | Set the link target                   |
-| `LnkSetString()` | Configure string properties           |
 | `LnkBuild()`     | Build/write the `.lnk` file           |
 | `LnkFree()`      | Release resources                     |
 
 The library also exposes structures representing the underlying Shell Link data.
 
-In normal usage, however, applications should prefer the provided API functions rather than directly manipulating the internal structures.
+In normal usage, however, applications should prefer the provided API functions rather than directly manipulating the internal structures, particularly for elements which have an associated API function.
+
+### More functions
+
+| Function                         | Description                                                              |
+| -------------------------------- | ------------------------------------------------------------------------ |
+| `LnkSetFlag()` et al.            | Set, Clear or Check Link Flags (`LNK_FLAG_*`)                            |
+| `LnkSetFileAttribute()` et al.   | Set, Clear or Check File Attributes (`LNK_FILE_ATTRIBUTE_*`)             |
+| `LnkSetCreationTime()` et al.    | Set or Get FILETIMEs (Creation, Access, Write)                           |
+| `LnkSetHotKey()` et al.          | Set, Get or Clear Link activation hotkey                                 |
+| `LnkSetPath()`                   | Create the Link IDList structure from an existing path                   |
+| `LnkGetPath()`                   | Decode the Link IDList structure to a string path (_under development_)  |
+| `LnkSetString()` et al.          | Set or Clear Link StringData structures (`LNK_SD_*`)                     |
+
+See `examples` for a more in-depth explanation.
 
 ---
 
 ## Architecture
 
-At its core, LibSLNK separates **link representation** from **link construction**:
+Architecturally, LibSLNK separates **link representation** from **link construction**:
 
 ```text
                  ┌──────────────────────┐
@@ -111,7 +126,7 @@ At its core, LibSLNK separates **link representation** from **link construction*
              ┌──────────────┼──────────────┐
              │              │              │
              ▼              ▼              ▼
-        LnkSetPath     LnkSetString    Other API
+        LnkSetPath      LnkSetFlag     Other API
              │              │              │
              └──────────────┼──────────────┘
                             ▼
@@ -122,7 +137,7 @@ At its core, LibSLNK separates **link representation** from **link construction*
                        .lnk file
 ```
 
-This approach makes the library useful both as a practical API and as a tool for exploring the internals of the Shell Link format.
+This approach gives the flexibility to use it as a higher level API to manipulate common LNK elements or to directly interact with a 1:1 representation of the actual LNK data.
 
 ---
 
@@ -155,14 +170,14 @@ If you are experimenting with unusual Shell Link configurations:
 
 ## Project Structure
 
+LibSLNK comes with a simple structure, and exposes its whole API through a single header file (`"LibSLNK.h"`)
+
 ```text
 LibSLNK/
 ├── src/
 │   └── ...
 ├── examples/
 │   └── ...
-├── test.c
-├── LibSLNK.h
 └── README.md
 ```
 
