@@ -20,12 +20,28 @@ struct MSShellLink *LnkInit(void)
 	Link->ShellLinkHeader.HeaderSize = 0x0000004C;
 
 	/* Fixed Value */
-	Link->ShellLinkHeader.LinkCLSID_1 = 0x00021401;
-	Link->ShellLinkHeader.LinkCLSID_2 = 0x00000000;
-	Link->ShellLinkHeader.LinkCLSID_3 = 0x46000000000000C0;
+	Link->ShellLinkHeader.LinkCLSID[0] = 0x01;
+	Link->ShellLinkHeader.LinkCLSID[1] = 0x14;
+	Link->ShellLinkHeader.LinkCLSID[2] = 0x02;
+	Link->ShellLinkHeader.LinkCLSID[3] = 0x00;
+
+	Link->ShellLinkHeader.LinkCLSID[4] = 0x00;
+	Link->ShellLinkHeader.LinkCLSID[5] = 0x00;
+	Link->ShellLinkHeader.LinkCLSID[6] = 0x00;
+	Link->ShellLinkHeader.LinkCLSID[7] = 0x00;
+
+	Link->ShellLinkHeader.LinkCLSID[8] = 0xC0;
+	Link->ShellLinkHeader.LinkCLSID[9] = 0x00;
+	Link->ShellLinkHeader.LinkCLSID[10] = 0x00;
+	Link->ShellLinkHeader.LinkCLSID[11] = 0x00;
+	Link->ShellLinkHeader.LinkCLSID[12] = 0x00;
+	Link->ShellLinkHeader.LinkCLSID[13] = 0x00;
+	Link->ShellLinkHeader.LinkCLSID[14] = 0x00;
+	Link->ShellLinkHeader.LinkCLSID[15] = 0x46;
 
 	/* Either 1, 3 or 7 */
 	Link->ShellLinkHeader.ShowCommand = 0x00000001;
+	LnkSetFlag(Link, LNK_FLAG_IS_UNICODE);
 
 	return Link;
 }
@@ -44,6 +60,10 @@ int LnkBuild(struct MSShellLink *Link, FILE *File)
 	}
 
 	if (!BuildStringDataToFile(Link, File)) {
+		return 0;
+	}
+
+	if (!BuildExtraDataToFile(Link, File)) {
 		return 0;
 	}
 

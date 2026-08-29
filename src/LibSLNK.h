@@ -1,9 +1,3 @@
-#ifndef LIBSLNK_H
-#define LIBSLNK_H
-
-#include <stdint.h>
-#include <stdio.h>
-
 /**
  * @file LibSLNK.h
  * @brief MS-SHLLINK Shell Link (.LNK) file format parser
@@ -15,7 +9,17 @@
  * @author Niccolò Bartolacelli
  */
 
+#ifndef LIBSLNK_H
+#define LIBSLNK_H
+
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#include <Windows.h>
+
 /* ShellLinkHeader Section */
+#include "FileTime.h"
 #include "LinkFlags.h"
 #include "FileAttributes.h"
 #include "HotKey.h"
@@ -39,21 +43,19 @@
  */
 struct ShellLinkHeader {
 	uint32_t HeaderSize;                /**< Must be 0x0000004C (76 bytes) */
-	uint32_t LinkCLSID_1;               /**< GUID (part 1/3): bytes 0-3. Must be {00021401-0000-0000-C000-000000000046} */
-	uint32_t LinkCLSID_2;               /**< GUID (part 2/3): bytes 4-7 */
-	uint64_t LinkCLSID_3;               /**< GUID (part 3/3): bytes 8-15 */
+	uint8_t LinkCLSID[16];	            /**< GUID. MUST be {00021401-0000-0000-C000-000000000046} */
 	uint32_t LinkFlags;                 /**< Flags specifying which fields are present (bit flags) */
 	uint32_t FileAttributes;            /**< FAT file attributes of the link target */
-	uint64_t CreationTime;              /**< Windows FILETIME structure for creation time */
-	uint64_t AccessTime;                /**< Windows FILETIME structure for last access time */
-	uint64_t WriteTime;                 /**< Windows FILETIME structure for last write time */
+	FILETIME CreationTime;              /**< Windows FILETIME structure for creation time */
+	FILETIME AccessTime;                /**< Windows FILETIME structure for last access time */
+	FILETIME WriteTime;                 /**< Windows FILETIME structure for last write time */
 	uint32_t FileSize;                  /**< Size of the link target in bytes */
 	uint32_t IconIndex;                 /**< Index of icon to use from associated file */
 	uint32_t ShowCommand;               /**< How the target window should be displayed (SW_NORMAL, SW_MAXIMIZED, SW_MINIMIZED) */
 	uint16_t HotKey;                    /**< Hotkey for launching the link target */
-	uint16_t Reserved1;                 /**< Reserved field, must be zero */
-	uint32_t Reserved2;                 /**< Reserved field, must be zero */
-	uint32_t Reserved3;                 /**< Reserved field, must be zero */
+	uint16_t Reserved1;                 /**< Reserved field, MUST be zero */
+	uint32_t Reserved2;                 /**< Reserved field, MUST be zero */
+	uint32_t Reserved3;                 /**< Reserved field, MUST be zero */
 };
 
 
@@ -234,6 +236,7 @@ struct ConsoleDataBlock {
 	uint16_t HistoryBufferSize;         /**< Command history buffer size */
 	uint16_t NumberOfHistoryBuffers;    /**< Number of history buffers */
 	uint8_t HistoryNoDup;               /**< No duplicate history entries flag */
+	uint32_t ColorTable[16];			/**< A table of 16 uint32, specifying the RGB colors that are used for text in the console window */
 };
 
 /**
@@ -286,8 +289,8 @@ struct EnvironmentVariableDataBlock {
 struct IconEnvironmentDataBlock {
 	uint32_t BlockSize;                 /**< Size of this data block */
 	uint32_t BlockSignature;            /**< Block signature (0xA0000007) */
-	char *IconEnvironmentDataAnsi;      /**< Icon path with environment variables (ANSI) */
-	wchar_t *IconEnvironmentDataUnicode;/**< Icon path with environment variables (Unicode) */
+	char *TargetAnsi;					/**< Icon path with environment variables (ANSI) */
+	wchar_t *TargetUnicode;				/**< Icon path with environment variables (Unicode) */
 };
 
 
