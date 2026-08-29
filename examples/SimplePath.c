@@ -1,19 +1,26 @@
-#include "LibSLNK.h"
+#define _CRT_SECURE_NO_WARNINGS
 
-int main(void)
+#include "../src/LibSLNK.h"
+
+int test_simple_path(void)
 {
+	struct MSShellLink *lnk;
+	FILE *fptr;
+
 	/* Initialization */
-	struct MSShellLink lnk;
-	LnkInit(&lnk);
+	lnk = LnkInit();
 
 
 	/* Configuration */
-	LnkSetPath(&lnk, L"C:\\test\\a.txt");
+	LnkSetPath(lnk, L"C:\\test\\a.txt");
 
 
 	/* Build and cleanup */
-	LnkBuild(&lnk, L"C:\\test\\lnk_to_a.txt.lnk");
-	LnkFree(&lnk);
+	fptr = _wfopen(L"C:\\test\\lnk_to_a.txt.lnk", L"wb");
+	LnkBuild(lnk, fptr);
+	fclose(fptr);
+
+	LnkFree(lnk);
 
 	return 0;
 }

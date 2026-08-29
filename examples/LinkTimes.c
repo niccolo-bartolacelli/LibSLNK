@@ -2,7 +2,7 @@
 
 #include "../src/LibSLNK.h"
 
-int test_strings(void)
+int test_file_times(void)
 {
 	struct MSShellLink *lnk;
 	FILE *fptr;
@@ -12,10 +12,19 @@ int test_strings(void)
 
 
 	/* Configuration */
-	LnkSetPath(lnk, L"C:\\Windows\\System32\\cmd.exe");
+	LnkSetPath(lnk, L"C:\\test\\al.txt");
 
-	LnkSetString(lnk, L"/c start calc", LNK_SD_COMMAND_LINE_ARGUMENTS);
-	LnkSetString(lnk, L"Click Me!", LNK_SD_NAME_STRING);
+	SYSTEMTIME time = { 0 };
+
+	time.wYear = 2023;
+	time.wMonth = 4;
+	time.wDay = 13;
+	time.wHour = 12;
+	time.wMinute = 23;
+	time.wSecond = 0;
+	time.wMilliseconds = 0;
+
+	LnkSetAccessTime(lnk, &time);
 
 
 	/* Build and cleanup */
